@@ -2,19 +2,19 @@
 #include <GLFW/glfw3.h>
 
 #include <cmath>
-#include <iostream>
+#include <cstdint>
 #include <cstdlib>
 #include <fstream>
+#include <iostream>
 #include <vector>
-#include <cstdint>
 
 #include <vecmath.h>
 
-#include "starter1_util.h"
-#include "parse.h"
-#include "curve.h"
-#include "surf.h"
 #include "camera.h"
+#include "curve.h"
+#include "parse.h"
+#include "starter1_util.h"
+#include "surf.h"
 #include "vertexrecorder.h"
 
 using namespace std;
@@ -23,8 +23,7 @@ using namespace std;
 // Stroustup.  But basically, the functionality of putting all the
 // globals in an "unnamed namespace" is to ensure that everything in
 // here is only accessible to code in this file.
-namespace
-{
+namespace {
 // Global variables here.
 
 // This assignment uses a useful camera implementation
@@ -37,19 +36,15 @@ GLuint program_light;
 
 // These are state variables for the UI
 bool gMousePressed = false;
-enum CurveMode {
-   CURVE_MODE_NONE,
-   CURVE_MODE_ACTIVE,
-   CURVE_MODE_WITH_NORMALS
-};
-int  gCurveMode = CURVE_MODE_ACTIVE;
+enum CurveMode { CURVE_MODE_NONE, CURVE_MODE_ACTIVE, CURVE_MODE_WITH_NORMALS };
+int gCurveMode = CURVE_MODE_ACTIVE;
 enum SurfaceMode {
-   SURFACE_MODE_NONE,
-   SURFACE_MODE_ACTIVE,
-   SURFACE_MODE_WITH_NORMALS
+    SURFACE_MODE_NONE,
+    SURFACE_MODE_ACTIVE,
+    SURFACE_MODE_WITH_NORMALS
 };
-int  gSurfaceMode = SURFACE_MODE_ACTIVE;
-int  gPointMode = 1;
+int gSurfaceMode = SURFACE_MODE_ACTIVE;
+int gPointMode = 1;
 
 // This detemines how big to draw the normals
 const float gLineLen = 0.1f;
@@ -62,12 +57,12 @@ struct Recorders {
     VertexRecorder surface;
     VertexRecorder surfaceNormals;
 };
-Recorders* recorders;
+Recorders *recorders;
 
 // These std::vectors store the control points, curves, and
 // surfaces that will end up being drawn. Other std::vectors
 // store the names for the curves and surfaces (as given by the files)
-vector<vector<Vector3f> > gCtrlPoints;
+vector<vector<Vector3f>> gCtrlPoints;
 vector<Curve> gCurves;
 vector<string> gCurveNames;
 vector<Surface> gSurfaces;
@@ -86,10 +81,8 @@ void drawCurve(void);
 void drawPoints(void);
 void drawSurface(void);
 
-
-static void keyCallback(GLFWwindow* window, int key,
-    int scancode, int action, int mods)
-{
+static void keyCallback(GLFWwindow *window, int key, int scancode, int action,
+                        int mods) {
     if (action == GLFW_RELEASE) { // only handle PRESS and REPEAT
         return;
     }
@@ -100,8 +93,7 @@ static void keyCallback(GLFWwindow* window, int key,
     case GLFW_KEY_ESCAPE: // Escape key
         exit(0);
         break;
-    case ' ':
-    {
+    case ' ': {
         Matrix4f eye = Matrix4f::identity();
         camera.SetRotation(eye);
         camera.SetCenter(Vector3f(0, 0, 0));
@@ -124,7 +116,8 @@ static void keyCallback(GLFWwindow* window, int key,
     }
 }
 
-static void mouseCallback(GLFWwindow* window, int button, int action, int mods) {
+static void mouseCallback(GLFWwindow *window, int button, int action,
+                          int mods) {
     double xd, yd;
     glfwGetCursorPos(window, &xd, &yd);
     int x = (int)xd;
@@ -149,16 +142,14 @@ static void mouseCallback(GLFWwindow* window, int button, int action, int mods) 
     }
 }
 
-static void motionCallback(GLFWwindow* window, double x, double y)
-{
+static void motionCallback(GLFWwindow *window, double x, double y) {
     if (!gMousePressed) {
         return;
     }
     camera.MouseDrag((int)x, (int)y);
 }
 
-void setViewport(GLFWwindow* window)
-{
+void setViewport(GLFWwindow *window) {
     int w, h;
     glfwGetFramebufferSize(window, &w, &h);
 
@@ -167,8 +158,7 @@ void setViewport(GLFWwindow* window)
     camera.ApplyViewport();
 }
 
-void drawAxis()
-{
+void drawAxis() {
     glUseProgram(program_color);
     camera.SetUniforms(program_color);
 
@@ -201,8 +191,7 @@ void drawAxis()
     recorder.draw(GL_LINES);
 }
 
-void drawCurve()
-{
+void drawCurve() {
     glUseProgram(program_color);
     camera.SetUniforms(program_color);
 
@@ -214,11 +203,10 @@ void drawCurve()
     }
 }
 
-void updateMaterialUniforms(GLuint program)
-{
-    GLfloat diffColor[] = { 0.4f, 0.4f, 0.4f, 1 };
-    GLfloat specColor[] = { 0.9f, 0.9f, 0.9f, 1 };
-    GLfloat shininess[] = { 50.0f };
+void updateMaterialUniforms(GLuint program) {
+    GLfloat diffColor[] = {0.4f, 0.4f, 0.4f, 1};
+    GLfloat specColor[] = {0.9f, 0.9f, 0.9f, 1};
+    GLfloat shininess[] = {50.0f};
     int loc = glGetUniformLocation(program, "diffColor");
     glUniform4fv(loc, 1, diffColor);
     loc = glGetUniformLocation(program, "specColor");
@@ -227,19 +215,17 @@ void updateMaterialUniforms(GLuint program)
     glUniform1f(loc, shininess[0]);
 }
 
-void updateLightUniforms(GLuint program)
-{
-    GLfloat lightPos[] = { 3.0f, 3.0f, 5.0f, 1.0f };
+void updateLightUniforms(GLuint program) {
+    GLfloat lightPos[] = {3.0f, 3.0f, 5.0f, 1.0f};
     int loc = glGetUniformLocation(program, "lightPos");
     glUniform4fv(loc, 1, lightPos);
 
-    GLfloat lightDiff[] = { 120.0f, 120.0f, 120.0f, 1.0f };
+    GLfloat lightDiff[] = {120.0f, 120.0f, 120.0f, 1.0f};
     loc = glGetUniformLocation(program, "lightDiff");
     glUniform4fv(loc, 1, lightDiff);
 }
 
-void drawSurface()
-{
+void drawSurface() {
     const bool shaded = true; // TODO add UI for this variable
     if (shaded) {
         // DRAW SHADED SURFACE
@@ -247,7 +233,6 @@ void drawSurface()
         camera.SetUniforms(program_light);
         updateMaterialUniforms(program_light);
         updateLightUniforms(program_light);
-
 
         // shade interior of polygons
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -276,8 +261,7 @@ void drawSurface()
     }
 }
 
-void drawPoints()
-{
+void drawPoints() {
     glUseProgram(program_color);
     camera.SetUniforms(program_color);
 
@@ -300,8 +284,7 @@ void drawPoints()
     glEnable(GL_DEPTH_TEST);
 }
 
-void initRendering()
-{
+void initRendering() {
     // Clear to black
     glClearColor(0, 0, 0, 1);
     glEnable(GL_DEPTH_TEST);
@@ -309,11 +292,10 @@ void initRendering()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-// Load in objects from standard input into the global variables: 
+// Load in objects from standard input into the global variables:
 // gCtrlPoints, gCurves, gCurveNames, gSurfaces, gSurfaceNames.  If
 // loading fails, this will exit the program.
-void loadObjects(int argc, char *argv[])
-{
+void loadObjects(int argc, char *argv[]) {
     if (argc < 2) {
         cerr << "usage: " << argv[0] << " SWPFILE [OBJPREFIX] " << endl;
         exit(0);
@@ -325,12 +307,11 @@ void loadObjects(int argc, char *argv[])
         exit(0);
     }
 
+    cerr << endl
+         << "*** loading and constructing curves and surfaces ***" << endl;
 
-    cerr << endl << "*** loading and constructing curves and surfaces ***" << endl;
-
-    if (!parseFile(in, gCtrlPoints,
-        gCurves, gCurveNames,
-        gSurfaces, gSurfaceNames)) {
+    if (!parseFile(in, gCtrlPoints, gCurves, gCurveNames, gSurfaces,
+                   gSurfaceNames)) {
         cerr << "\aerror in file format\a" << endl;
         in.close();
         exit(-1);
@@ -347,14 +328,13 @@ void loadObjects(int argc, char *argv[])
         for (int i = 0; i < (int)gSurfaceNames.size(); i++) {
             if (gSurfaceNames[i] != ".") {
                 string filename =
-                    prefix + string("_")
-                    + gSurfaceNames[i]
-                    + string(".obj");
+                    prefix + string("_") + gSurfaceNames[i] + string(".obj");
 
                 ofstream out(filename.c_str());
 
                 if (!out) {
-                    cerr << "\acould not open file " << filename << ", skipping" << endl;
+                    cerr << "\acould not open file " << filename << ", skipping"
+                         << endl;
                     out.close();
                     continue;
                 } else {
@@ -398,12 +378,11 @@ void freeVertices() {
     recorders = nullptr;
 }
 
-}
-int main(int argc, char** argv)
-{
+} // namespace
+int main(int argc, char **argv) {
     loadObjects(argc, argv);
 
-    GLFWwindow* window = createOpenGLWindow(600, 600, "Assignment 1");
+    GLFWwindow *window = createOpenGLWindow(600, 600, "Assignment 1");
 
     // setup the event handlers
     glfwSetKeyCallback(window, keyCallback);

@@ -8,13 +8,13 @@ float rad2deg(float rad);
 
 struct GLFWwindow;
 // creates a window using GLFW and initializes an OpenGL 3.3+ context.
-GLFWwindow* createOpenGLWindow(int width, int height, const char* title);
+GLFWwindow *createOpenGLWindow(int width, int height, const char *title);
 
 // returns 0 on error
 // program must be freed with glDeleteProgram()
-uint32_t compileProgram(const char* vertexshader, const char* fragmentshader);
+uint32_t compileProgram(const char *vertexshader, const char *fragmentshader);
 
-static const char* c_vertexshader = R"RAWSTR(
+static const char *c_vertexshader = R"RAWSTR(
 #version 330
 // These are vertex attributes.
 // You can define custom attributes,
@@ -46,7 +46,7 @@ void main () {
     var_Color = vec4(Color, 1);
 }
 )RAWSTR";
-static const char* c_fragmentshader_color = R"RAWSTR(
+static const char *c_fragmentshader_color = R"RAWSTR(
 #version 330
 in vec4 var_Color;
 in vec3 var_Normal;
@@ -59,7 +59,7 @@ void main() {
 }
 )RAWSTR";
 
-static const char* c_fragmentshader_light = R"RAWSTR(
+static const char *c_fragmentshader_light = R"RAWSTR(
 #version 330
 in vec4 var_Color;
 in vec3 var_Normal;

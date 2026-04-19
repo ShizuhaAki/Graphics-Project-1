@@ -9,8 +9,7 @@
 // after it has been tesselated: the vertex (V), the tangent (T), the
 // normal (N), and the binormal (B).  It is the responsiblility of
 // functions that create these objects to fill in all the data.
-struct CurvePoint
-{
+struct CurvePoint {
     Vector3f V; // Vertex
     Vector3f T; // Tangent  (unit)
     Vector3f N; // Normal   (unit)
@@ -18,8 +17,7 @@ struct CurvePoint
 };
 
 // This is just a handy shortcut.
-typedef std::vector< CurvePoint > Curve;
-
+typedef std::vector<CurvePoint> Curve;
 
 ////////////////////////////////////////////////////////////////////////////
 // The following two functions take an array of control points (stored
@@ -33,18 +31,19 @@ typedef std::vector< CurvePoint > Curve;
 
 // Assume number of control points properly specifies a piecewise
 // Bezier curve.  I.e., C.size() == 4 + 3*n, n=0,1,...
-Curve evalBezier( const std::vector< Vector3f >& P, unsigned steps );
+Curve evalBezier(const std::vector<Vector3f> &P, unsigned steps);
 
 // Bsplines only require that there are at least 4 control points.
-Curve evalBspline( const std::vector< Vector3f >& P, unsigned steps );
+Curve evalBspline(const std::vector<Vector3f> &P, unsigned steps);
 
 // Create a circle on the xy-plane of radius and steps
-Curve evalCircle( float radius, unsigned steps);
+Curve evalCircle(float radius, unsigned steps);
 
 class VertexRecorder;
 // Record the curve vertices
-void recordCurve( const Curve& curve, VertexRecorder* recorder);
+void recordCurve(const Curve &curve, VertexRecorder *recorder);
 // Record the curve's associated coordinate frames
-void recordCurveFrames( const Curve& curve, VertexRecorder* recorder, float framesize);
+void recordCurveFrames(const Curve &curve, VertexRecorder *recorder,
+                       float framesize);
 
 #endif

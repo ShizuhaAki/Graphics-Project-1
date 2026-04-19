@@ -9,11 +9,10 @@
 void setupDebugPrint();
 void printOpenGLVersion();
 
-
-GLFWwindow* createOpenGLWindow(int width, int height, const char* title) {
+GLFWwindow *createOpenGLWindow(int width, int height, const char *title) {
     // GLFW creates a window and OpenGL context
     // in a platform-independent manner.
-    GLFWwindow* window;
+    GLFWwindow *window;
     if (!glfwInit()) {
         printf("Could not init glfw\n");
         return nullptr;
@@ -46,7 +45,7 @@ GLFWwindow* createOpenGLWindow(int width, int height, const char* title) {
 #ifndef __APPLE__
     GLenum err = glewInit();
     if (GLEW_OK != err) {
-        //Problem: glewInit failed, something is wrong.
+        // Problem: glewInit failed, something is wrong.
         fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
         return nullptr;
     }
@@ -60,36 +59,30 @@ GLFWwindow* createOpenGLWindow(int width, int height, const char* title) {
 }
 
 #ifndef __APPLE__
-static void GLAPIENTRY gl_dbg_callback(GLenum source,
-    GLenum type,
-    GLuint id,
-    GLenum severity,
-    GLsizei length,
-    const GLchar* message,
-    const void* userParam)
-{
+static void GLAPIENTRY gl_dbg_callback(GLenum source, GLenum type, GLuint id,
+                                       GLenum severity, GLsizei length,
+                                       const GLchar *message,
+                                       const void *userParam) {
     if (severity > GL_DEBUG_SEVERITY_NOTIFICATION) {
-        // below some spammy ids that you might want to filter 
-        //id != 131204 && id != 131076 && id != 131184 && 
-        //id != 131186 && id != 131188 && id != 131154
+        // below some spammy ids that you might want to filter
+        // id != 131204 && id != 131076 && id != 131184 &&
+        // id != 131186 && id != 131188 && id != 131154
         if (id != 131076) {
-            const char* msg = "Type = %d, id = %d, severity = %d, %s\n";
+            const char *msg = "Type = %d, id = %d, severity = %d, %s\n";
             fprintf(stderr, msg, type, id, severity, message);
         }
     }
 }
 
-void setupDebugPrint()
-{
-    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
-        GL_DONT_CARE, 0, nullptr, GL_TRUE);
+void setupDebugPrint() {
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr,
+                          GL_TRUE);
     glDebugMessageCallback(gl_dbg_callback, nullptr);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 }
 #endif
 
-static bool compileShader(GLuint handle, GLenum stype, const char* src)
-{
+static bool compileShader(GLuint handle, GLenum stype, const char *src) {
     int shader_len = (int)strlen(src);
     glShaderSource(handle, 1, &src, &shader_len);
     glCompileShader(handle);
@@ -101,7 +94,10 @@ static bool compileShader(GLuint handle, GLenum stype, const char* src)
         int nwritten;
         glGetShaderInfoLog(handle, 2048, &nwritten, buff);
 
-        const char* typelabel = stype == GL_VERTEX_SHADER ? "vertex" : (stype == GL_FRAGMENT_SHADER ? "fragment" : "unknown");
+        const char *typelabel =
+            stype == GL_VERTEX_SHADER
+                ? "vertex"
+                : (stype == GL_FRAGMENT_SHADER ? "fragment" : "unknown");
         printf("Error in %s shader\n%s\n", typelabel, buff);
         return false;
     }
@@ -109,16 +105,13 @@ static bool compileShader(GLuint handle, GLenum stype, const char* src)
 }
 
 // caller must free returned shader object
-static int compileShader(GLenum type, const char* src)
-{
+static int compileShader(GLenum type, const char *src) {
     GLuint handle = glCreateShader(type);
     compileShader(handle, type, src);
     return handle;
 }
 
-
-static bool linkProgram(GLuint handle, GLuint vshader, GLuint fshader)
-{
+static bool linkProgram(GLuint handle, GLuint vshader, GLuint fshader) {
     glAttachShader(handle, vshader);
     glAttachShader(handle, fshader);
     glLinkProgram(handle);
@@ -134,8 +127,7 @@ static bool linkProgram(GLuint handle, GLuint vshader, GLuint fshader)
     return true;
 }
 
-uint32_t compileProgram(const char* vshader_src, const char* fshader_src)
-{
+uint32_t compileProgram(const char *vshader_src, const char *fshader_src) {
     GLuint program = glCreateProgram();
     GLuint vshader = compileShader(GL_VERTEX_SHADER, vshader_src);
     GLuint fshader = compileShader(GL_FRAGMENT_SHADER, fshader_src);
@@ -150,8 +142,7 @@ uint32_t compileProgram(const char* vshader_src, const char* fshader_src)
     return program;
 }
 
-void printOpenGLVersion()
-{
+void printOpenGLVersion() {
     int major;
     int minor;
     glGetIntegerv(GL_MAJOR_VERSION, &major);
@@ -159,13 +150,6 @@ void printOpenGLVersion()
     printf("Running OpenGL %d.%d\n", major, minor);
 }
 
-float deg2rad(float deg)
-{
-    return deg / 180.0f * 3.141592f;
-}
+float deg2rad(float deg) { return deg / 180.0f * 3.141592f; }
 
-float rad2deg(float rad)
-{
-    return rad / 3.141592f * 180.0f;
-}
-
+float rad2deg(float rad) { return rad / 3.141592f * 180.0f; }
