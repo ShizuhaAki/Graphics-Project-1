@@ -50,8 +50,6 @@ Surface makeSurfRev(const Curve &profile, unsigned steps) {
 		exit(0);
 	}
 
-	// TODO: Here you should build the surface.  See surf.h for details.
-
 	cerr << "\t>>> makeSurfRev called\n";
 	cerr << "\t>>> Steps (type steps): " << steps << endl;
 

@@ -29,23 +29,6 @@ Curve evalBezier(const vector<Vector3f> &P, unsigned steps) {
 		exit(0);
 	}
 
-	// TODO:
-	// You should implement this function so that it returns a Curve
-	// (e.g., a vector< CurvePoint >).  The variable "steps" tells you
-	// the number of points to generate on each piece of the spline.
-	// At least, that's how the sample solution is implemented and how
-	// the SWP files are written.  But you are free to interpret this
-	// variable however you want, so long as you can control the
-	// "resolution" of the discretized spline curve with it.
-
-	// Make sure that this function computes all the appropriate
-	// Vector3fs for each CurvePoint: V,T,N,B.
-	// [NBT] should be unit and orthogonal.
-
-	// Also note that you may assume that all Bezier curves that you
-	// receive have G1 continuity.  Otherwise, the TNB will not be
-	// be defined at points where this does not hold.
-
 	cerr << "\t>>> evalBezier has been called with the following input:" << endl;
 
 	cerr << "\t>>> Control points (type vector< Vector3f >): " << endl;
@@ -91,11 +74,6 @@ Curve evalBspline(const vector<Vector3f> &P, unsigned steps) {
 		cerr << "evalBspline must be called with 4 or more control points." << endl;
 		exit(0);
 	}
-
-	// TODO:
-	// It is suggested that you implement this function by changing
-	// basis from B-spline to Bezier.  That way, you can just call
-	// your evalBezier function.
 
 	cerr << "\t>>> evalBSpline has been called with the following input:"
 		 << endl;

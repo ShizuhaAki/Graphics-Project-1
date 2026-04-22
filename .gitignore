@@ -58,3 +58,4 @@ a1.exe
 *.tmp
 
 .cache
+.codex
