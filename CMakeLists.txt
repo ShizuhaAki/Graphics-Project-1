@@ -11,7 +11,7 @@ if (APPLE)
 endif()
 
 if (UNIX)
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=gnu++11")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=gnu++20")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-variable")
   # recommended but not set by default

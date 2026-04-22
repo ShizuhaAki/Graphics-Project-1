@@ -38,7 +38,7 @@ Curve evalBezier(const vector<Vector3f> &P, unsigned steps) {
 
 	cerr << "\t>>> Steps (type steps): " << steps << endl;
 
-	return evalBspline(P, steps);
+	// return evalBspline(P, steps);
 
 	// return Curve();
 
@@ -109,13 +109,19 @@ Curve evalBspline(const vector<Vector3f> &P, unsigned steps) {
 	}
 
 	R.back() = R[0];
-	
-	R[0].B = Vector3f(0, 0, 1);
-	for (size_t i = 1; i < R.size(); ++i) {
-		R[i].N = Vector3f::cross(R[i - 1].B, R[i].T).normalized();
-		R[i].B = Vector3f::cross(R[i].T, R[i].N).normalized();
-	}
+    Vector3f arbitrary_B(0, 0, 1);
+    
+    if (abs(Vector3f::dot(R[0].T, arbitrary_B)) > 0.99f) {
+        arbitrary_B = Vector3f(1, 0, 0); 
+    }
 
+    R[0].N = Vector3f::cross(arbitrary_B, R[0].T).normalized();
+    R[0].B = Vector3f::cross(R[0].T, R[0].N).normalized();
+
+    for (size_t i = 1; i < R.size(); ++i) {
+        R[i].N = Vector3f::cross(R[i - 1].B, R[i].T).normalized();
+        R[i].B = Vector3f::cross(R[i].T, R[i].N).normalized();
+    }
 	return R;
 }
 
